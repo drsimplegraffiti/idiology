@@ -7,16 +7,16 @@ import {
   Post,
   Put,
   UsePipes,
-  Logger
+  Logger,
 } from '@nestjs/common';
 import { IdeaDTO } from './idea.dto';
 import { ValidationPipe } from '../shared/validation.pipe';
 import { IdeaService } from './idea.service';
 
-@Controller('idea')
+@Controller('api/ideas')
 export class IdeaController {
   private logger = new Logger('IdeaController');
-  constructor(private ideaService: IdeaService) { }
+  constructor(private ideaService: IdeaService) {}
   @Get()
   showAllIdeas() {
     return this.ideaService.showAll();
