@@ -3,6 +3,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -31,6 +33,10 @@ export class UserEntity {
   @OneToMany(type => IdeaEntity, idea => idea.author)
   ideas: IdeaEntity[];
 
+  @ManyToMany(type => IdeaEntity, { cascade: true })
+  @JoinTable()
+  bookmarks: IdeaEntity[];
+
   @BeforeInsert()
   async hasPassword() {
     const salt = await bcrypt.genSalt(10);
@@ -45,6 +51,9 @@ export class UserEntity {
     }
     if (this.ideas) {
       responseObject.ideas = this.ideas;
+    }
+    if (this.bookmarks) {
+      responseObject.bookmarks = this.bookmarks;
     }
     return responseObject;
   }
