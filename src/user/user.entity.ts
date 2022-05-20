@@ -3,11 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { UserRO } from './user.dto';
+import { IdeaEntity } from 'src/idea/idea.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -26,6 +28,9 @@ export class UserEntity {
   @Column('text')
   password: string;
 
+  @OneToMany(type => IdeaEntity, idea => idea.author)
+  ideas: IdeaEntity[];
+
   @BeforeInsert()
   async hasPassword() {
     const salt = await bcrypt.genSalt(10);
@@ -37,6 +42,9 @@ export class UserEntity {
     const responseObject: any = { id, created, username };
     if (showToken) {
       responseObject.token = token;
+    }
+    if (this.ideas) {
+      responseObject.ideas = this.ideas;
     }
     return responseObject;
   }
